@@ -1,9 +1,35 @@
 import React from "react";
 import { Meteor } from "meteor/meteor";
 import { render } from "react-dom";
-import App from "../../ui/App"
+import { ApolloClient } from "apollo-client";
+import { ApolloProvider } from "react-apollo";
+import { HttpLink } from "apollo-link-http";
+import { InMemoryCache } from "apollo-cache-inmemory";
+
+import App from "../../ui/App";
+
+// Create meteor client connection
+// Meteor.absoluteUrl grabs the absolute URL based on relative path
+const httpLink = new HttpLink({
+  uri: Meteor.absoluteUrl("graphql")
+});
+
+const cache = new InMemoryCache();
+
+const client = new ApolloClient({
+  link: httpLink,
+  cache
+});
+
+// Wrap the App component in ApolloProvider
+// ApolloProvider makes Apollo available to React
+const ApolloApp = () => (
+  <ApolloProvider client={client}>
+    <App />
+  </ApolloProvider>
+);
 
 // For Meteor - similar to ReactDOM.render, except it's meteor.startup
 Meteor.startup(() => {
-  render(<App />, document.getElementById("app"));
+  render(<ApolloApp />, document.getElementById("app"));
 });
