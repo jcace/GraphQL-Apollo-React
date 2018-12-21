@@ -1,19 +1,18 @@
 import React from "react";
 import gql from "graphql-tag";
 import { graphql } from "react-apollo";
-import ResolutionForm from './ResolutionForm'
+import ResolutionForm from "./ResolutionForm";
 
-const App = ({ data }) => {
-  // Data.loading - goes true once graphql 
+const App = ({ loading, resolutions }) => {
+  // Data.loading - goes true once graphql
   //  has returned data
-  if (data.loading) return null;
+  if (loading) return null;
   else {
     return (
       <div>
-        <h1>{data.hi}</h1>
-        <ResolutionForm refetch={data.refetch} />
+        <ResolutionForm />
         <ul>
-          {data.resolutions.map(resolution => (
+          {resolutions.map(resolution => (
             <li key={resolution.id}>{resolution.name}</li>
           ))}
         </ul>
@@ -23,8 +22,8 @@ const App = ({ data }) => {
 };
 
 // Construct the graphQL Query
-const hiQuery = gql`
-  {
+const resolutionsQuery = gql`
+  query Resolutions {
     hi
     resolutions {
       _id
@@ -35,4 +34,6 @@ const hiQuery = gql`
 
 // Higher order component. 'data' property is now
 // available here
-export default graphql(hiQuery)(App);
+export default graphql(resolutionsQuery, {
+  props: ({ data }) => ({ ...data })
+})(App);
