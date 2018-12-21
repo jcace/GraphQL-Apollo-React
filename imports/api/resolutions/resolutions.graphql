@@ -1,0 +1,17 @@
+# New Years Resolutions
+
+# id comes from mongo..
+# In the Schema, we have to define properties
+#  and their types
+# The ! means it MUST be there  (required)
+
+# Schema -- a description of what's publically available
+# Return type
+type Resolution {
+  _id: String!
+  name: String!
+}
+
+type Mutation {
+  createResolution(name: String!): Resolution
+}
